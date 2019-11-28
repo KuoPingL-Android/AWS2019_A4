@@ -1,0 +1,49 @@
+  Q1. What is ​Polymorphism​? Try to explain in Mandarin.
+
+  Q2. Here are the 7 important lifecycle methods of an ​Activity​:
+      i.onCreate()
+      ii.onStart()
+      iii.onResume()
+      iv.onPause()
+      v.onStop()
+      vi.onDestroy()
+      vii.onRestart()
+    Try to explain when are they called during the lifecycle of Activity.
+
+    A2.
+      onCreate :
+        - called when the activity was first created or
+          after the activity was destroyed.
+      onStart :
+        - called everytime the activity is displayed,
+      onResume :
+        - called whenever the activity enters the foreground, such as
+            - when the activity was first built
+            - when views like share ...
+            - when the app comes back from the background
+      onPause :
+        - this is the mirror of onResume.
+        - called whenever the activity enters background.e
+
+  Q3. What is the ​Android Jetpack​?
+
+  Q4. Key concepts in ​Android Development​:
+      Try to research them and explain briefly.
+      i.Activity
+      ii.Service
+      iii.Content Provider
+      iv.Broadcast Receiver
+      v.Notification
+      vi.Runtime Permission
+      vii.ANR
+      viii.OOM
+      ix.Exception
+      x.Material Design
+
+  Q5. What is ​Coroutines​? Why we use it? Try to explain in Mandarin.
+
+
+
+|
+|
+|
