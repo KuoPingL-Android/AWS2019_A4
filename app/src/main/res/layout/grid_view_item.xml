@@ -42,7 +42,6 @@
             app:layout_constraintRight_toRightOf="parent"/>
 
         <TextView
-            android:background="@color/colorAccent"
             android:id="@+id/type_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +57,6 @@
             tools:text="For Rent" />
 
         <TextView
-            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
