@@ -19,6 +19,7 @@ package com.example.android.marsrealestate.overview
 
 import android.app.Application
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.DiffUtil
@@ -35,6 +36,21 @@ import com.example.android.marsrealestate.network.MarsProperty
  */
 class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Application) :
         ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyViewHolder>(DiffCallback) {
+
+    class TextViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        companion object {
+            fun from(parent: ViewGroup): TextViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.,
+                        parent,
+                        false)
+                return TextViewHolder(view)
+            }
+        }
+    }
+
+
+
     /**
      * The MarsPropertyViewHolder constructor takes the binding variable from the associated
      * GridViewItem, which nicely gives it access to the full [MarsProperty] information.
