@@ -25,10 +25,9 @@
             name="property"
             type="com.example.android.marsrealestate.network.MarsProperty" />
     </data>
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/mars_image"
             android:layout_width="match_parent"
@@ -37,6 +36,40 @@
             android:adjustViewBounds="true"
             android:padding="2dp"
             app:imageUrl="@{property.imgSrcUrl}"
-            tools:src="@tools:sample/backgrounds/scenic"/>
-    </RelativeLayout>
+            tools:src="@tools:sample/backgrounds/scenic"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+            android:background="@color/colorAccent"
+            android:id="@+id/type_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="@{property.displayedType}"
+            android:textAlignment="viewStart"
+            android:textColor="#de000000"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mars_image"
+            tools:text="For Rent" />
+
+        <TextView
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="@{property.displayedPrice}"
+            android:textAlignment="viewStart"
+            android:textColor="#de000000"
+            android:textSize="20sp"
+            tools:text="$100,000"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/type_textView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

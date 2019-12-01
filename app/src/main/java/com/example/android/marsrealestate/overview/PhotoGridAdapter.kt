@@ -17,11 +17,14 @@
 
 package com.example.android.marsrealestate.overview
 
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.databinding.GridViewItemBinding
 import com.example.android.marsrealestate.network.MarsProperty
 
@@ -30,15 +33,33 @@ import com.example.android.marsrealestate.network.MarsProperty
  * data, including computing diffs between lists.
  * @param onClick a lambda that takes the
  */
-class PhotoGridAdapter( val onClickListener: OnClickListener ) :
+class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Application) :
         ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyViewHolder>(DiffCallback) {
     /**
      * The MarsPropertyViewHolder constructor takes the binding variable from the associated
      * GridViewItem, which nicely gives it access to the full [MarsProperty] information.
      */
-    class MarsPropertyViewHolder(private var binding: GridViewItemBinding):
+    class MarsPropertyViewHolder(private var binding: GridViewItemBinding, val app: Application):
             RecyclerView.ViewHolder(binding.root) {
         fun bind(marsProperty: MarsProperty) {
+
+            marsProperty.displayedPrice = {
+                app.applicationContext.getString(
+                        when (marsProperty.isRental) {
+                            true -> R.string.display_price_monthly_rental
+                            false -> R.string.display_price
+                        }, marsProperty.price)
+            }()
+
+            marsProperty.displayedType = {
+                app.applicationContext.getString(R.string.display_type,
+                        app.applicationContext.getString(
+                                when(marsProperty.isRental) {
+                                    true -> R.string.type_rent
+                                    false -> R.string.type_sale
+                                }))
+            }()
+
             binding.property = marsProperty
             // This is important, because it forces the data binding to execute immediately,
             // which allows the RecyclerView to make the correct view size measurements
@@ -65,7 +86,7 @@ class PhotoGridAdapter( val onClickListener: OnClickListener ) :
      */
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): MarsPropertyViewHolder {
-        return MarsPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)))
+        return MarsPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)), app)
     }
 
     /**
@@ -73,6 +94,7 @@ class PhotoGridAdapter( val onClickListener: OnClickListener ) :
      */
     override fun onBindViewHolder(holder: MarsPropertyViewHolder, position: Int) {
         val marsProperty = getItem(position)
+
         holder.itemView.setOnClickListener {
             onClickListener.onClick(marsProperty)
         }
