@@ -28,6 +28,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.databinding.GridViewItemBinding
 import com.example.android.marsrealestate.network.MarsProperty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+private const val ITEM_VIEW_TYPE_HEADER = 0
+private const val ITME_VIEW_TYPE_ITEM = 1
 
 /**
  * This class implements a [RecyclerView] [ListAdapter] which uses Data Binding to present [List]
@@ -35,13 +42,27 @@ import com.example.android.marsrealestate.network.MarsProperty
  * @param onClick a lambda that takes the
  */
 class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Application) :
-        ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyViewHolder>(DiffCallback) {
+        ListAdapter<DataItem, RecyclerView.ViewHolder>(DiffCallback) {
+    private val adapterScope = CoroutineScope(Dispatchers.Default)
+
+    fun addHeaderAndSubmitList(list: List<MarsProperty>?) {
+        adapterScope.launch {
+            val items = when (list) {
+                null -> listOf(DataItem.Header)
+                else -> listOf(DataItem.Header) + list.map { DataItem.MarsPropertyItem(it) }
+            }
+            withContext(Dispatchers.Main) {
+                submitList(items)
+            }
+        }
+    }
+
 
     class TextViewHolder(view: View): RecyclerView.ViewHolder(view) {
         companion object {
             fun from(parent: ViewGroup): TextViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater.inflate(R.layout.,
+                val view = layoutInflater.inflate(R.layout.header,
                         parent,
                         false)
                 return TextViewHolder(view)
@@ -87,12 +108,12 @@ class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Applicat
      * Allows the RecyclerView to determine which items have changed when the [List] of [MarsProperty]
      * has been updated.
      */
-    companion object DiffCallback : DiffUtil.ItemCallback<MarsProperty>() {
-        override fun areItemsTheSame(oldItem: MarsProperty, newItem: MarsProperty): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<DataItem>() {
+        override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
             return oldItem === newItem
         }
 
-        override fun areContentsTheSame(oldItem: MarsProperty, newItem: MarsProperty): Boolean {
+        override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
             return oldItem.id == newItem.id
         }
     }
@@ -101,20 +122,34 @@ class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Applicat
      * Create new [RecyclerView] item views (invoked by the layout manager)
      */
     override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): MarsPropertyViewHolder {
-        return MarsPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)), app)
+                                    viewType: Int): RecyclerView.ViewHolder {
+        return  when(viewType) {
+            ITEM_VIEW_TYPE_HEADER -> TextViewHolder.from(parent)
+            ITME_VIEW_TYPE_ITEM -> MarsPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)), app)
+            else ->throw ClassCastException("Unknown viewType ${viewType}")
+        }
     }
 
     /**
      * Replaces the contents of a view (invoked by the layout manager)
      */
-    override fun onBindViewHolder(holder: MarsPropertyViewHolder, position: Int) {
-        val marsProperty = getItem(position)
-
-        holder.itemView.setOnClickListener {
-            onClickListener.onClick(marsProperty)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when(holder) {
+            is MarsPropertyViewHolder -> {
+                val item = getItem(position) as DataItem.MarsPropertyItem
+                holder.itemView.setOnClickListener {
+                    onClickListener.onClick(item.marsProperty)
+                }
+                holder.bind(item.marsProperty)
+            }
         }
-        holder.bind(marsProperty)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is DataItem.Header -> ITEM_VIEW_TYPE_HEADER
+            is DataItem.MarsPropertyItem -> ITME_VIEW_TYPE_ITEM
+        }
     }
 
     /**
