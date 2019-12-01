@@ -1,0 +1,49 @@
+  Here I am going to write the walkthrough for this question.
+
+  Also, I will record something that might seem odd, hopefully
+  I can figure out in the near future.
+
+
+ STEP 1 :
+ ==================
+ 1. CHANGE LAYOUTMANGER to LINEARLAYOUTMANGER
+    @fragment_overview
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+ 2. WERID THINGS HAPPEN
+
+  - after (1), the items within the RECYCLERVIEW became very small.
+    I was expecting the items would be
+                      [screen_width by 170dp]
+    but the result is
+                      [64dp by 64dp]
+
+    So here are the things that I have tried but did not work :
+    a .
+      Wrap the image in a ConstraintLayout.
+      The result is better. The image is showing the correct height.
+      Unfortunately, it is not showing the proper width.
+
+                        [170dp by 170dp]
+    b.
+      Wrap the Image in a RelativeLayout.
+      Even though the Image did sized properly, but the TextViews are
+      simply placed at the Center - horizonally.
+
+  SOLUTION .
+  STEP (1) is INCORRECT
+        We still need to use GridLayoutManager
+        We just need to set the span = 1
+
+        Then we simply set the grid_view_item using ConstraintLayout.
+
+  =====================================================================
+  HEADER
+
+
+
+
+
+
+
+  |||
