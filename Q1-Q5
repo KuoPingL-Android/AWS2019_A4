@@ -1,5 +1,36 @@
   Q1. What is ​Polymorphism​? Try to explain in Mandarin.
 
+    A1.
+      Polymorphism 多型，指的是父子關係的類別中，子類別可以覆蓋父類別的方法的特性。
+      多型跟繼承很類似。
+      繼承指的是類別之間的關係(父子)，而多型指的是在父子類別當中的方法之間的關係 (override)。
+      當使用多型的時候，呼叫同樣的方法時，父和子給的結果能有所不同。
+
+      例子 ：
+          class Human {
+              fun eat() {
+                  print("eat meat and vegetable")
+              }
+          }
+
+          class MeatLover: Human {
+              override fun eat() {
+                  print("eat more meat than vegetable")
+              }
+          }
+
+          class Vegetarian: Human {
+              override fun eat() {
+                  print("eat only vegetable")
+              }
+          }
+
+    當我們創造各自的物件 (human, meatlover, vegetarian)，並呼叫 eat() 時，
+            human       會給 "eat meat and vegetable"
+            meatLover   會給 "eat more meat than vegetable"
+            vegetarian  會給 "eat only vegetable"
+
+
   Q2. Here are the 7 important lifecycle methods of an ​Activity​:
       i.onCreate()
       ii.onStart()
@@ -12,36 +43,255 @@
 
     A2.
       onCreate :
-        - called when the activity was first created or
-          after the activity was destroyed.
+        - called when the activity was first created.
       onStart :
-        - called everytime the activity is displayed,
+        - called the first time the activity is displayed
       onResume :
-        - called whenever the activity enters the foreground, such as
-            - when the activity was first built
-            - when views like share ...
-            - when the app comes back from the background
+        - called whenever the activity enters the foreground
       onPause :
         - this is the mirror of onResume.
-        - called whenever the activity enters background.e
+        - called whenever the activity exit foreground.
+      onStop :
+        - this is the mirror of onStart/onRestart
+        - called when the app is no longer visible
+      onDestroy :
+        - called when the App is removed from the memory
+
+      onRestart :
+        - this is similar to onStart
+        - called when user navigates to the activity.
 
   Q3. What is the ​Android Jetpack​?
 
+    A3.
+      According to Android developer official site :
+      https://developer.android.com/jetpack
+
+          "Jetpack is a suite of libraries, tools, and guidance"
+
+      It consists of 4 components :
+          - Foundation
+            - including Test, AndroidKTX, AppCompat
+            -  provide cross-cutting functionality
+                like backwards compatibility,
+                testing and Kotlin language support.
+          - Architecture
+            - Data Binding, LiveData, Lifecycle, Navigation,
+              Room, ViewModel
+            - help you design robust, testable and maintainable apps
+          - Behavior
+            - Permission, Notifications, Sharing
+            - help your app integrate with standard Android services
+              like notifications, permissions, sharing and the Assistant.
+          - UI
+            - Animation & transition, Fragment, Layout
+            - provide widgets and helpers to make your app not only easy,
+              but delightful to use.
+
+
   Q4. Key concepts in ​Android Development​:
       Try to research them and explain briefly.
+
+      A4.
       i.Activity
+      ----------
+        - An activity is a single, focused thing that the user can do.
+        - It contains the UI and is responsible for all receiving all
+          the interactions users are giving.
+
+
       ii.Service
+      ----------
+        - A Service is an application component representing
+              - either an application's desire to perform a longer-running
+                operation while not interacting with the user or
+              - to supply functionality for other applications to use.
+        - It is not a separate operation and it is not a thread.
+        - The two main features of service are :
+              - to tell the system about something it wants to be
+                doing in the background. This is done by calling
+                Context.startService()
+              - to expose its functionality to other applications.
+                This is done by calling Context.bindService()
+
+
       iii.Content Provider
+      --------------------
+        - this is similar to Database.
+          the main difference is that a content provider is
+          only required if you need to share data between
+          multiple applications, but a database is used
+          only for the application itself.
+        - this sharing mechanism is done through the
+          single ContentResolver interface using the
+          authorized URI and passing the request
+          to the content provider registered with the authority.
+
+
       iv.Broadcast Receiver
+      ---------------------
+        - It is a class that receives and handles broadcast intents.
+        - Apps can receive broadcasts in two ways:
+              - through manifest-declared receivers and
+              - context-registered receivers.
+        - If the receiver is declared in Manifest, then
+          whenever a boardcast is sent, your app will be launched.
+          Also, the object is only valid for the duration of
+          the call to onReceive(Context, Intent).
+        - If the receiver is a context-registered receiver,
+          the BroadcastReceiver object is valid if
+          the context is valid and if the object is still
+          registered.
+
+
       v.Notification
+      --------------
+        - It is a message that Android displays outside your app's UI
+          to provide the user with reminders,
+          communication from other people,
+          or other timely information from your app.
+        - Notification can have various appearances, including :
+              - Status bar and notification drawer
+              - Heads-up notification
+              - Lock screen
+              - App icon badge
+              - Wear OS devices
+        - You can even decide the notification actions,
+          notification channel, and the importance of the notification.
+
+
       vi.Runtime Permission
+      ---------------------
+        - These are permissions that needs to be asked during runtime.
+        - Unlike "normal" permissions, such as internet access, which
+          only need to be listed in the manifest, a "dangerous" permission,
+          such as camera, also require user's permission in runtime.
+
+
       vii.ANR
+      -------
+        - stands for "Application Not Responding"
+        - this error is triggered if the UI-thread is blocked for too long.
+        - ANR can be triggered when one of the following conditions occur :
+              - While your activity is in the foreground,
+                your app has not responded to an input event
+                or BroadcastReceiver (such as key press or screen touch events)
+                within 5 seconds.
+              - While you do not have an activity in the foreground,
+                your BroadcastReceiver hasn't finished executing within
+                a considerable amount of time.
+        - some common patterns when diagnosing ANRs :
+              - The app is doing slow operations
+                involving I/O on the main thread.
+              - The app is doing a long calculation on the main thread.
+              - The main thread is doing a
+                synchronous binder call
+                to another process, and that
+                other process is taking a long time to return.
+              - The main thread is blocked waiting for a synchronized block
+                for a long operation that is happening on another thread.
+              - The main thread is in a deadlock with another thread,
+                either in your process or via a binder call.
+                The main thread is not just waiting for a long operation
+                to finish, but is in a deadlock situation.
+        - techniques can help you find out which of
+          these causes is causing your ANRs
+              - Strict mode
+              - Enable background ANR dialogs
+              - Traceview
+              - Pull a traces file
+
+
       viii.OOM
+      --------
+        - stands for "Out of Memory".
+        - Android sets a hard limit on the heap size alloted
+          for each app. When your app has reached the heap capacity
+          and tries to allocate more memory, OOM error will be thrown
+          by the system.
+        - even though Android performs routine garbage collection,
+          OOM might still occur, an example that could lead to
+          OOM would be memory leaks.
+        - There are three ways to prevent or fix memory issues :
+              - Monitor memory usage
+                  - you can monitor the memory usage with Memory Profiler,
+                  - you can release memory in response to events by implementing
+                    the ComponentCallbacks2 interface
+                  - you can check how much memory you should use
+                    getMemoryInfo().
+              - Use Memory Efficiently
+                  - get rid of services that are not needed
+                  - use optimize data containers,
+                    including SparseArray, SparseBooleanArray,
+                    and LongSparseArray
+                  - limit your use of abstraction.
+                    Generally they require a fair amount
+                    more code that needs to be executed,
+                    requiring more time and more RAM
+                    for that code to be mapped into memory
+                  - Avoid memory churn. The more time that the
+                    system spends on garbage collection,
+                    the less time it has to do other stuff like rendering
+                    or streaming audio.
+            - Remove memory-intensive resources and libraries
+                  - Reduce overall APK size
+                  - Use Dagger 2 for dependency injection
+                  - Beware of using external libraries. They might
+                    cause problems due to differing implementations
+
+
       ix.Exception
+      ------------
+        - The class Exception and its subclasses are a form of Throwable
+          that indicates conditions that a reasonable application
+          might want to catch.
+
+          EXAMPLE :
+              fun throwsException() {
+                  throws IOException()
+              }
+
+        - In Android, the term Exception can be divided into two types :
+              - checked exception
+                  - such as Class Exception and its subclasses that
+                    are not also the subclasses of RuntimeException.
+                  - Checked exceptions need to be declared in a method
+                    or constructor's throws clause
+                    if they can be thrown by the execution of the method
+                    or constructor and
+                    propagate outside the method or constructor boundary.
+              - unchecked exception
+                  - such as Class RuntimeException and its subclasses
+                  - exceptions that can be thrown during the
+                    normal operation of the Java Virtual Machine.
+        - Here are some simple exceptions that we see :
+              - checked exception :
+                  Throwable, Exception, IOException and SQLException
+              - unchecked exception :
+                  NullPointerException, ClassCastException,
+                  IllegalArgumentException, ArithmeticException,
+                  IndexOutOfBoundsException, NumberFormatException and
+                  UnsupportedOperationException
+
+
       x.Material Design
+      -----------------
+        - a collective of design principles, includes design best practices,
+          common conventions, and visuals, to help you build expressive
+          apps that feel at home on any device
+        - https://developer.android.com/distribute/best-practices/
+          develop/use-material-design
 
   Q5. What is ​Coroutines​? Why we use it? Try to explain in Mandarin.
 
+  A5.
+    Coroutines (協程)，是一個電腦程式的組件。
+    主要功能是協助式多任務。
+    使用協程運行的子程式可以被暫停以及恢復，以達到有效率的執行。
+    協程主要是用於需要長時間運作的子程式，比如從網路抓取資料。
+    因為網路抓取資料所花費的時間不一定，因此為了能抓資料又不會堵住 CPU
+    的線程，協程就能發揮功效了。
+    協程能將這個程式先行暫停，並等到線程可用時再將其恢復執行。
 
 
 |
