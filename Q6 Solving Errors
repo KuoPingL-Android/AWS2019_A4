@@ -38,9 +38,79 @@
         Then we simply set the grid_view_item using ConstraintLayout.
 
   =====================================================================
+  ADDITIONAL INFO
+
+  After making sure that the Items are laying out properly,
+  we are going to add two more TextView at the bottom of the imageView.
+
+  This seems to be an easy problem, however, the two TextView need to show
+
+  1. Appropriate Type (For Rent, For Sale)
+  2. Appropriate Cost (if for rent : $%,.0f/month; else $%,.0f)
+
+  We had done this when creating DetailViewModel
+
+  class DetailViewModel(marsProperty: MarsProperty, app: Application) :
+                                                AndroidViewModel(app)
+
+  with the Application, DetailViewModel can then get the
+  resources and applied the R.String.display_price_monthly_rental and others
+  to get the proper Text and Price.
+
+  Therefore, in order for OverViewFragment to display these "proper" text,
+  we also need to let OverViewViewModel to know about the Application.
+
+
+  FIRST QUESTION :
+          WHAT IS THE DIFFERENCE BETWEEN
+          ViewModel() vs AndroidViewModel(app) ?
+          ---------------------------------------
+          public class AndroidViewModel
+                      extends ViewModel
+
+          Application context aware ViewModel.
+
+  So we will also make
+        OverViewViewModel a AndroidViewModel(app)
+
+        class OverviewViewModel(val app: Application) : AndroidViewModel(app)
+
+  Then we will add two more variables in MarsProperty :
+
+              @Parcelize
+              data class MarsProperty(
+              val id: String,
+              @Json(name = "img_src") val imgSrcUrl: String,
+              val type: String,
+              val price: Double) : Parcelable {
+              val isRental
+              get() = type == "rent"
+
+              var displayedPrice = ""
+              var displayedType = ""
+              }
+
+  These two values will be set during getMarsRealEstateProperties().
+
+  The values can simply be displayed via dataBinding.
+
+
+  =====================================================================
   HEADER
 
+  Here is the process of creating HEADER.
 
+  1. Create an XML
+
+  <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/text"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:textAppearance="?android:attr/textAppearanceLarge"
+  android:text="@string/header_text"
+  android:padding="8dp" />
+
+  2. Create a DataItem
 
 
 

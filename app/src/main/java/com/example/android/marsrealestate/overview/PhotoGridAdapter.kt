@@ -41,7 +41,7 @@ private const val ITME_VIEW_TYPE_ITEM = 1
  * data, including computing diffs between lists.
  * @param onClick a lambda that takes the
  */
-class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Application) :
+class PhotoGridAdapter( val onClickListener: OnClickListener) :
         ListAdapter<DataItem, RecyclerView.ViewHolder>(DiffCallback) {
     private val adapterScope = CoroutineScope(Dispatchers.Default)
 
@@ -76,26 +76,26 @@ class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Applicat
      * The MarsPropertyViewHolder constructor takes the binding variable from the associated
      * GridViewItem, which nicely gives it access to the full [MarsProperty] information.
      */
-    class MarsPropertyViewHolder(private var binding: GridViewItemBinding, val app: Application):
+    class MarsPropertyViewHolder(private var binding: GridViewItemBinding):
             RecyclerView.ViewHolder(binding.root) {
         fun bind(marsProperty: MarsProperty) {
 
-            marsProperty.displayedPrice = {
-                app.applicationContext.getString(
-                        when (marsProperty.isRental) {
-                            true -> R.string.display_price_monthly_rental
-                            false -> R.string.display_price
-                        }, marsProperty.price)
-            }()
-
-            marsProperty.displayedType = {
-                app.applicationContext.getString(R.string.display_type,
-                        app.applicationContext.getString(
-                                when(marsProperty.isRental) {
-                                    true -> R.string.type_rent
-                                    false -> R.string.type_sale
-                                }))
-            }()
+//            marsProperty.displayedPrice = {
+//                app.applicationContext.getString(
+//                        when (marsProperty.isRental) {
+//                            true -> R.string.display_price_monthly_rental
+//                            false -> R.string.display_price
+//                        }, marsProperty.price)
+//            }()
+//
+//            marsProperty.displayedType = {
+//                app.applicationContext.getString(R.string.display_type,
+//                        app.applicationContext.getString(
+//                                when(marsProperty.isRental) {
+//                                    true -> R.string.type_rent
+//                                    false -> R.string.type_sale
+//                                }))
+//            }()
 
             binding.property = marsProperty
             // This is important, because it forces the data binding to execute immediately,
@@ -125,7 +125,7 @@ class PhotoGridAdapter( val onClickListener: OnClickListener , val app: Applicat
                                     viewType: Int): RecyclerView.ViewHolder {
         return  when(viewType) {
             ITEM_VIEW_TYPE_HEADER -> TextViewHolder.from(parent)
-            ITME_VIEW_TYPE_ITEM -> MarsPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)), app)
+            ITME_VIEW_TYPE_ITEM -> MarsPropertyViewHolder(GridViewItemBinding.inflate(LayoutInflater.from(parent.context)))
             else ->throw ClassCastException("Unknown viewType ${viewType}")
         }
     }
